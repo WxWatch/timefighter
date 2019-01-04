@@ -3,7 +3,12 @@ package com.jamesglenn.timefighter.timefighter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -44,6 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         tapMeButton.setOnClickListener {
             view ->
+            val bounceAnimation = AnimationUtils.loadAnimation(this, R.anim.bounce)
+            view.startAnimation(bounceAnimation)
             incrementScore()
         }
     }
@@ -61,6 +68,28 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
 
         Log.d(TAG, "onDestroy called.")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_about) {
+            showInfo()
+        }
+        return true
+    }
+
+    private fun showInfo() {
+        val dialogTitle = getString(R.string.about_title, BuildConfig.VERSION_NAME)
+        val dialogMessage = getString(R.string.about_message)
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(dialogTitle)
+        builder.setMessage(dialogMessage)
+        builder.create().show()
     }
 
     private fun restoreGame() {
@@ -107,6 +136,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateScore() {
         gameScoreTextView.text = getString(R.string.your_score, score.toString())
+        val blinkAnimation = AnimationUtils.loadAnimation(this, R.anim.blink)
+        gameScoreTextView.startAnimation(blinkAnimation)
     }
 
     private fun startGame() {
